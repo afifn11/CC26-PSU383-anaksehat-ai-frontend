@@ -146,7 +146,7 @@ function LeftPanel({ role }) {
       <AmbientBg />
 
       <div className="relative z-10 flex items-center gap-3">
-        <img src="/icon.png" alt="AnakSehat AI" className="h-9 w-9 rounded-[10px]" />
+        <img src="/favicon.png" alt="AnakSehat AI" className="h-9 w-9 rounded-[10px]" />
         <span className="font-jakarta text-[15px] font-bold text-white">AnakSehat AI</span>
       </div>
 
@@ -325,7 +325,7 @@ export default function Register() {
                 </Link>
                 <div className="flex items-center gap-[10px]">
                   <div className="flex items-center gap-[7px]">
-                    <img src="/icon.png" alt="AnakSehat AI" className="h-[28px] w-[28px] rounded-[7px]" />
+                    <img src="/favicon.png" alt="AnakSehat AI" className="h-[28px] w-[28px] rounded-[7px]" />
                     <span className="font-jakarta text-[13.5px] font-bold text-white">AnakSehat AI</span>
                   </div>
                   <button
