@@ -1,13 +1,12 @@
-/* eslint-disable no-unused-vars */
 // src/pages/orangtua/RekomendasiAnak.jsx
 import { useEffect, useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import MainLayout from '@/components/layout/MainLayout'
-import { orangtuaService, prediksiService } from '@/services/balitaService'
+import { prediksiService } from '@/services/balitaService'
+import { useAuthStore } from '@/store/authStore'
 import { Brain, CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { Breadcrumb, CardSkeleton, EmptyState, StatusBadge } from '@/components/ui/SharedComponents'
-import { AnimatedProgressBar } from '@/components/ui/AnimatedCounter'
 import { getHazColor, getWhoStatusColor, getWhoStatusShortLabel } from '@/constants/riskConfig'
 
 const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
@@ -15,11 +14,12 @@ const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
 function RekomendasiCard({ r, index }) {
   const [open, setOpen] = useState(index === 0)
   const priorityColor = { high: 'var(--danger)', medium: 'var(--warning)', low: 'var(--success)' }[r.priority] ?? 'var(--primary)'
+  
   return (
     <div className="card !p-0 overflow-hidden">
       <button
         onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center gap-[14px] p-[14px_16px] bg-transparent border-none cursor-pointer text-left"
+        className="w-full flex items-center gap-[14px] p-[14px_16px] bg-transparent border-none cursor-pointer text-left focus:outline-none"
       >
         <div
           className="w-[44px] h-[44px] bg-[var(--bg-elevated)] rounded-xl flex items-center justify-center text-[22px] flex-shrink-0 border-2"
@@ -59,6 +59,8 @@ function RekomendasiCard({ r, index }) {
 
 export default function RekomendasiAnak() {
   const { prediksiId } = useParams()
+  const { user } = useAuthStore() // Mengambil child_id langsung dari store
+  
   const [data, setData]         = useState(null)
   const [namaAnak, setNamaAnak] = useState('')
   const [loading, setLoading]   = useState(true)
@@ -73,28 +75,45 @@ export default function RekomendasiAnak() {
           setNamaAnak(MOCK_BALITA[4]?.nama ?? '')
           return
         }
-        const dashboard = await orangtuaService.getDashboard()
-        if (!dashboard) { toast.error('Data anak tidak ditemukan.'); return }
-        const childId = dashboard.anak.id
-        setNamaAnak(dashboard.anak.nama)
+
+        const childId = user?.child_id
+        if (!childId) {
+           toast.error('Data anak belum tertaut dengan akun Anda.')
+           setLoading(false)
+           return 
+        }
+
+        // Hanya fetch riwayat, tidak perlu memanggil getDashboard lagi.
+        const riwayat = await prediksiService.getRiwayat(childId)
+        
+        // Ambil nama dari item riwayat pertama jika ada, atau gunakan inisial user
+        const nama = riwayat[0]?.balita?.nama ?? user?.nama ?? 'Anak'
+        setNamaAnak(nama)
+
         if (prediksiId) {
-          const riwayat = await prediksiService.getRiwayat(childId)
+          // Cari prediksi spesifik
           setData(riwayat.find(r => r.prediction_id === prediksiId) ?? riwayat[0] ?? null)
         } else {
-          setData(dashboard.rekomendasi_terkini ?? (await prediksiService.getRiwayat(childId))[0] ?? null)
+          // Default ke prediksi paling baru (index 0)
+          setData(riwayat[0] ?? null)
         }
+
       } catch (err) {
         toast.error('Gagal memuat rekomendasi.')
       } finally {
         setLoading(false)
       }
     }
-    fetchData()
-  }, [prediksiId])
+    
+    // Pastikan fetch hanya berjalan jika user siap
+    if (user) {
+        fetchData()
+    }
+  }, [prediksiId, user])
 
   if (loading) return (
     <MainLayout>
-      <div className="fade-in">
+      <div className="fade-in max-w-[800px] mx-auto">
         <div className="skeleton-shimmer h-4 w-[180px] rounded-[5px] mb-[18px]" />
         <CardSkeleton lines={4} />
         <div className="mt-3 flex flex-col gap-[10px]">
@@ -108,7 +127,9 @@ export default function RekomendasiAnak() {
 
   if (!data) return (
     <MainLayout>
-      <EmptyState type="riwayat" title="Belum ada rekomendasi" desc="Rekomendasi akan muncul setelah pemeriksaan pertama di Posyandu." />
+      <div className="max-w-[800px] mx-auto">
+        <EmptyState type="riwayat" title="Belum ada rekomendasi" desc="Rekomendasi akan muncul setelah pemeriksaan pertama di Posyandu." />
+      </div>
     </MainLayout>
   )
 
@@ -118,7 +139,7 @@ export default function RekomendasiAnak() {
 
   return (
     <MainLayout>
-      <div className="fade-in">
+      <div className="fade-in max-w-[800px] mx-auto">
         <Breadcrumb items={[
           { label: 'Dashboard', href: '/orangtua/dashboard' },
           { label: 'Rekomendasi AI' },
