@@ -16,13 +16,13 @@ const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
 
 function buildBalitaList(rawBalita) {
   return rawBalita.map(b => {
-    const riwayat = b.riwayat ?? []
-    const latest  = riwayat[0] ?? null
+    // FIX: Sesuaikan pembacaan dengan respons API riil (menggunakan last_prediction atau history)
+    const latest  = b.last_prediction ?? b.history?.[0] ?? b.riwayat?.[0] ?? null
     return {
-      id:        b.child_id ?? b.id,
-      nama:      b.name ?? b.nama ?? '—',
-      nama_ibu:  b.mother_name ?? b.nama_ibu ?? '—',
-      usia_bulan: b.age_months ?? b.usia_bulan,
+      id:                 b.child_id ?? b.id,
+      nama:               b.name ?? b.nama ?? '—',
+      nama_ibu:           b.parent_name ?? b.mother_name ?? b.nama_ibu ?? '—',
+      usia_bulan:         b.age_months ?? b.usia_bulan,
       status:             latest?.risk_class         ?? b.status_risiko ?? b.status ?? '—',
       haz_score:          latest?.haz_score          ?? b.haz_score    ?? null,
       stunting_status:    latest?.stunting_status    ?? null,
@@ -30,7 +30,6 @@ function buildBalitaList(rawBalita) {
       wasting_status:     latest?.wasting_status     ?? null,
       tanggal:            latest?.created_at?.slice(0, 10) ?? b.tanggal_periksa ?? '—',
       prediksiId:         latest?.prediction_id ?? null,
-      riwayat,
     }
   })
 }
@@ -198,7 +197,7 @@ export default function RiwayatPemeriksaan() {
                         <div className="text-[11px] text-[var(--text-muted)]">
                           {b.usia_bulan} bln · HAZ:{' '}
                           <span className="font-semibold" style={{ color: hazColor }}>
-                            {b.haz_score?.toFixed(2) ?? '—'}
+                            {b.haz_score != null ? Number(b.haz_score).toFixed(2) : '—'}
                           </span>
                         </div>
                       </div>
@@ -240,7 +239,7 @@ export default function RiwayatPemeriksaan() {
                               <strong className="ml-1" style={{
                                 color: selected.haz_score >= -2 ? 'var(--success)' : selected.haz_score >= -3 ? 'var(--warning)' : 'var(--danger)',
                               }}>
-                                {selected.haz_score.toFixed(2)}
+                                {Number(selected.haz_score).toFixed(2)}
                               </strong>
                             </span>
                           )}
@@ -248,7 +247,6 @@ export default function RiwayatPemeriksaan() {
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      {/* UX Fix: Tombol Unduh dinonaktifkan */}
                       <button 
                         className="btn-secondary text-xs opacity-50 cursor-not-allowed" 
                         title="Fitur segera hadir" 
@@ -338,7 +336,7 @@ export default function RiwayatPemeriksaan() {
                                       <div>
                                         <div className="text-[11px] text-[var(--text-muted)]">HAZ</div>
                                         <div className="text-base font-bold font-jakarta" style={{ color: hazColor }}>
-                                          {r.haz_score.toFixed(2)}
+                                          {Number(r.haz_score).toFixed(2)}
                                         </div>
                                       </div>
                                     )}
