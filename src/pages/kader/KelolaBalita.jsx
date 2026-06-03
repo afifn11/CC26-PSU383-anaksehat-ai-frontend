@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/set-state-in-effect */
-/* eslint-disable no-unused-vars */
 // src/pages/kader/KelolaBalita.jsx
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
@@ -10,9 +8,14 @@ import { Search, Download, PlusCircle, Edit2, Eye, Trash2, AlertCircle } from 'l
 import toast from 'react-hot-toast'
 import { ConfirmModal, EmptyState, TableRowSkeleton, Breadcrumb, StatusBadge } from '@/components/ui/SharedComponents'
 import { AnimatedStatCard } from '@/components/ui/AnimatedCounter'
-import { Users, TrendingDown, CheckCircle } from 'lucide-react'
+import { Users, CheckCircle } from 'lucide-react'
+import { getHazColor } from '@/constants/riskConfig'
 
 const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
+
+// Parameter pagination default — konsisten di load awal maupun setelah aksi
+const DEFAULT_PAGE   = 1
+const DEFAULT_LIMIT  = 20
 
 export default function KelolaBalita() {
   const [balitaList, setBalitaList]   = useState([])
@@ -22,14 +25,15 @@ export default function KelolaBalita() {
   const [deleteTarget, setDeleteTarget] = useState(null)
   const [deleting, setDeleting]        = useState(false)
 
-  const fetchData = async () => {
+  const fetchData = async (page = DEFAULT_PAGE, limit = DEFAULT_LIMIT) => {
     try {
       if (USE_MOCK) {
         await new Promise(r => setTimeout(r, 600))
         setBalitaList(MOCK_BALITA)
       } else {
-        const res = await balitaService.getAll()
-        setBalitaList(res.data ?? res)
+        // Konsisten menggunakan server-side pagination di semua kondisi
+        const res = await balitaService.getAll({ page, limit })
+        setBalitaList(res.data ?? [])
       }
     } catch {
       toast.error('Gagal memuat data balita.')
@@ -56,8 +60,8 @@ export default function KelolaBalita() {
     setDeleting(true)
     try {
       await balitaService.delete(deleteTarget.id)
-      const result = await balitaService.getAll({ page: 1, limit: 20 })
-      setBalitaList(result.data ?? [])
+      // Refresh dengan parameter pagination yang sama seperti load awal
+      await fetchData(DEFAULT_PAGE, DEFAULT_LIMIT)
       toast.success(`Data ${deleteTarget.nama} berhasil dihapus.`)
     } catch (err) {
       toast.error(err?.response?.data?.detail?.message || 'Gagal menghapus data.')
@@ -129,7 +133,12 @@ export default function KelolaBalita() {
               <option>Stunted</option>
               <option>Severely Stunted</option>
             </select>
-            <button className="btn-secondary h-[34px] text-[13px]">
+            {/* Export CSV: dinonaktifkan — fitur belum tersedia */}
+            <button
+              className="btn-secondary h-[34px] text-[13px] opacity-50 cursor-not-allowed"
+              disabled
+              title="Fitur Export CSV segera hadir"
+            >
               <Download size={14} /> Export CSV
             </button>
           </div>
@@ -173,9 +182,7 @@ export default function KelolaBalita() {
                 </thead>
                 <tbody>
                   {filtered.map(b => {
-                    const hazColor = b.haz_score != null
-                      ? (b.haz_score >= -2 ? 'var(--success)' : b.haz_score >= -3 ? 'var(--warning)' : 'var(--danger)')
-                      : 'var(--text-muted)'
+                    const hazColor = getHazColor(b.haz_score)
                     return (
                       <tr key={b.id}>
                         <td>

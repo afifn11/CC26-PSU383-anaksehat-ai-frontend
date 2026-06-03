@@ -5,7 +5,7 @@ import { useAuthStore } from '@/store/authStore'
 import { MOCK_BALITA, MOCK_DASHBOARD_STATS, CHART_DATA_KOMUNITAS } from '@/store/mockData'
 import { kaderService } from '@/services/balitaService'
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
-import { Users, Activity, AlertCircle, TrendingDown, ChevronRight, PlusCircle } from 'lucide-react'
+import { Users, Activity, AlertCircle, TrendingDown, ChevronRight, PlusCircle, FolderOpen } from 'lucide-react'
 import MainLayout from '@/components/layout/MainLayout'
 import { AnimatedStatCard, StatusGiziDonut } from '@/components/ui/AnimatedCounter'
 import { StatCardSkeleton, TableRowSkeleton, StatusBadge } from '@/components/ui/SharedComponents'
@@ -121,10 +121,10 @@ export default function KaderDashboard() {
             ? Array.from({ length: 4 }).map((_, i) => <StatCardSkeleton key={i} />)
             : (
               <>
-                <AnimatedStatCard label="Total Balita"     value={total}   sub="Di wilayah Anda"                                          color="var(--primary)"  icon={Users}        trend={3.2}  delay={0}   />
+                <AnimatedStatCard label="Total Balita"     value={total}   sub="Di wilayah Anda"                                       color="var(--primary)"  icon={Users}        trend={3.2}  delay={0}   />
                 <AnimatedStatCard label="Status Normal"    value={normal}  sub={total ? `${Math.round(normal / total * 100)}% dari total` : '—'} color="var(--success)" icon={Activity}     trend={2.1}  delay={80}  />
-                <AnimatedStatCard label="Risiko Stunted"   value={stunted} sub="Perlu intervensi"                                          color="var(--warning)" icon={AlertCircle}  trend={-1.5} delay={160} />
-                <AnimatedStatCard label="Severely Stunted" value={severe}  sub="Prioritas utama"                                           color="var(--danger)"  icon={TrendingDown} trend={-0.5} delay={240} />
+                <AnimatedStatCard label="Risiko Stunted"   value={stunted} sub="Perlu intervensi"                                      color="var(--warning)" icon={AlertCircle}  trend={-1.5} delay={160} />
+                <AnimatedStatCard label="Severely Stunted" value={severe}  sub="Prioritas utama"                                       color="var(--danger)"  icon={TrendingDown} trend={-0.5} delay={240} />
               </>
             )
           }
@@ -187,35 +187,50 @@ export default function KaderDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {loadingStats
-                    ? Array.from({ length: 4 }).map((_, i) => <TableRowSkeleton key={i} cols={5} />)
-                    : balita.map(b => {
-                        const hazColor = b.haz_score != null
-                          ? (b.haz_score >= -2 ? 'var(--success)' : b.haz_score >= -3 ? 'var(--warning)' : 'var(--danger)')
-                          : 'var(--text-muted)'
-                        return (
-                          <tr key={b.id}>
-                            <td>
-                              <div className="flex items-center gap-2.5">
-                                <div className="avatar flex-shrink-0">
-                                  {b.nama.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()}
-                                </div>
-                                <div>
-                                  <div className="font-semibold text-[13px]">{b.nama}</div>
-                                  <div className="text-[11.5px] text-[var(--text-muted)]">{b.nama_ibu}</div>
-                                </div>
+                  {loadingStats ? (
+                    Array.from({ length: 4 }).map((_, i) => <TableRowSkeleton key={i} cols={5} />)
+                  ) : balita.length === 0 ? (
+                    <tr>
+                      <td colSpan="5" className="text-center py-10">
+                        <div className="flex flex-col items-center justify-center gap-2">
+                          <div className="w-12 h-12 rounded-full bg-[var(--bg-hover)] border border-[var(--border)] flex items-center justify-center mb-1">
+                            <FolderOpen size={20} className="text-[var(--text-muted)]" />
+                          </div>
+                          <div className="text-[13px] font-semibold text-[var(--text-primary)]">Belum ada data balita</div>
+                          <div className="text-[12px] text-[var(--text-muted)] max-w-[280px]">
+                            Data balita terkini di wilayah Anda akan muncul di sini. Silakan mulai dengan menambahkan data baru.
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
+                    balita.map(b => {
+                      const hazColor = b.haz_score != null
+                        ? (b.haz_score >= -2 ? 'var(--success)' : b.haz_score >= -3 ? 'var(--warning)' : 'var(--danger)')
+                        : 'var(--text-muted)'
+                      return (
+                        <tr key={b.id}>
+                          <td>
+                            <div className="flex items-center gap-2.5">
+                              <div className="avatar flex-shrink-0">
+                                {b.nama.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()}
                               </div>
-                            </td>
-                            <td className="text-[13px]">{b.usia_bulan} bln</td>
-                            <td className="text-[13px] hide-mobile">{b.berat_badan}kg / {b.tinggi_badan}cm</td>
-                            <td className="text-[13px] font-semibold" style={{ color: hazColor }}>
-                              {b.haz_score != null ? b.haz_score.toFixed(2) : '—'}
-                            </td>
-                            <td><StatusBadge status={b.status_risiko} /></td>
-                          </tr>
-                        )
-                      })
-                  }
+                              <div>
+                                <div className="font-semibold text-[13px]">{b.nama}</div>
+                                <div className="text-[11.5px] text-[var(--text-muted)]">{b.nama_ibu}</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="text-[13px]">{b.usia_bulan} bln</td>
+                          <td className="text-[13px] hide-mobile">{b.berat_badan}kg / {b.tinggi_badan}cm</td>
+                          <td className="text-[13px] font-semibold" style={{ color: hazColor }}>
+                            {b.haz_score != null ? b.haz_score.toFixed(2) : '—'}
+                          </td>
+                          <td><StatusBadge status={b.status_risiko} /></td>
+                        </tr>
+                      )
+                    })
+                  )}
                 </tbody>
               </table>
             </div>

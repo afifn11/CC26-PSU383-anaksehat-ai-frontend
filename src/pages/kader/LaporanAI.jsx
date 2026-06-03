@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { useState } from 'react'
 import MainLayout from '@/components/layout/MainLayout'
 import { 
@@ -8,7 +7,7 @@ import {
 import { 
   Brain, TrendingUp, TrendingDown, AlertCircle, 
   MapPin, Calendar, Download, ChevronDown, Filter,
-  Users, DollarSign, Droplet, Activity, Home
+  Users, DollarSign, Droplet, Activity
 } from 'lucide-react'
 
 // Mock data - distribusi risiko per wilayah
@@ -207,42 +206,33 @@ export default function LaporanAI() {
 
   return (
     <MainLayout>
-      <div className="fade-in">
+      <div className="fade-in max-w-[1400px]">
         {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-5">
           <div>
             <h1 className="page-title">Laporan AI & Analitik</h1>
             <p className="page-subtitle">
               Visualisasi distribusi risiko stunting dan analisis faktor determinan berbasis AI.
             </p>
           </div>
-          <div style={{ display: 'flex', gap: 10 }}>
-            <button className="btn-secondary" style={{ fontSize: 13 }}>
+          <div className="flex gap-2.5 flex-wrap">
+            <button className="btn-secondary text-[13px]">
               <Calendar size={14} /> {periode}
             </button>
-            <button className="btn-primary" style={{ fontSize: 13 }}>
+            <button className="btn-primary text-[13px]">
               <Download size={14} /> Unduh Laporan
             </button>
           </div>
         </div>
 
         {/* Filter Bar */}
-        <div style={{ 
-          display: 'flex', 
-          gap: 12, 
-          marginBottom: 20, 
-          padding: '12px 16px',
-          background: 'var(--bg-card)', 
-          border: '1px solid var(--border)', 
-          borderRadius: 'var(--radius-lg)' 
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <MapPin size={14} color="var(--text-muted)" />
-            <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>Wilayah:</span>
+        <div className="flex flex-col md:flex-row gap-3 md:items-center mb-5 p-3 md:px-4 bg-[var(--bg-card)] border border-[var(--border)] rounded-[var(--radius-lg)]">
+          <div className="flex items-center gap-2">
+            <MapPin size={14} className="text-[var(--text-muted)]" />
+            <span className="text-[13px] text-[var(--text-secondary)]">Wilayah:</span>
           </div>
           <select 
-            className="input-field" 
-            style={{ width: 'auto', height: 34, fontSize: 13 }} 
+            className="input-field w-full md:w-auto h-[34px] text-[13px]" 
             value={selectedWilayah}
             onChange={(e) => setSelectedWilayah(e.target.value)}
           >
@@ -253,18 +243,18 @@ export default function LaporanAI() {
             <option>Kec. Pondok Aren</option>
             <option>Kec. Ciledug</option>
           </select>
-          <div style={{ width: 1, height: 24, background: 'var(--border)', margin: '0 4px' }} />
-          <button className="btn-ghost" style={{ fontSize: 12, padding: '5px 12px' }}>
+          <div className="hidden md:block w-px h-6 bg-[var(--border)] mx-1" />
+          <button className="btn-ghost text-xs px-3 py-1.5 w-full md:w-auto justify-center">
             <Filter size={13} /> Filter Lanjutan
           </button>
-          <div style={{ flex: 1 }} />
-          <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+          <div className="flex-1" />
+          <span className="text-xs text-[var(--text-muted)] mt-2 md:mt-0 text-right">
             Data diperbarui: 15 April 2026
           </span>
         </div>
 
-        {/* Stats Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 20 }}>
+        {/* Stats Grid - Migrasi ke Tailwind CSS grid responsif */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
           <StatCard 
             label="Total Balita" 
             value={totalBalita.toLocaleString()} 
@@ -295,135 +285,150 @@ export default function LaporanAI() {
           />
         </div>
 
-        {/* AI Insights */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, marginBottom: 20 }}>
+        {/* AI Insights - Migrasi ke Tailwind CSS grid responsif */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 mb-5">
           {AI_INSIGHTS.map((insight, i) => (
             <InsightCard key={i} insight={insight} />
           ))}
         </div>
 
-        {/* Charts Row */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
+        {/* Charts Row - Migrasi ke Tailwind CSS grid responsif */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-5">
           {/* Distribusi Risiko - Pie Chart */}
           <div className="card">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+            <div className="flex justify-between items-center mb-4">
               <div>
-                <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>Distribusi Risiko Stunting</div>
-                <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>Total {totalBalita.toLocaleString()} balita</div>
+                <div className="text-[14px] font-semibold text-[var(--text-primary)]">Distribusi Risiko Stunting</div>
+                <div className="text-[12px] text-[var(--text-muted)]">Total {totalBalita.toLocaleString()} balita</div>
               </div>
             </div>
-            <ResponsiveContainer width="100%" height={220}>
-              <PieChart>
-                <Pie
-                  data={DATA_DISTRIBUSI}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={85}
-                  paddingAngle={2}
-                  dataKey="value"
-                >
-                  {DATA_DISTRIBUSI.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip 
-                  contentStyle={{ 
-                    background: 'var(--bg-elevated)', 
-                    border: '1px solid var(--border)', 
-                    borderRadius: 8, 
-                    fontSize: 12 
-                  }} 
-                />
-                <Legend 
-                  verticalAlign="bottom" 
-                  height={36}
-                  formatter={(value) => <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{value}</span>}
-                />
-              </PieChart>
-            </ResponsiveContainer>
+            {/* Wrapper overflow-x-auto untuk perlindungan ekstra di mobile */}
+            <div className="overflow-x-auto w-full pb-2">
+              <div className="min-w-[300px]">
+                <ResponsiveContainer width="100%" height={220}>
+                  <PieChart>
+                    <Pie
+                      data={DATA_DISTRIBUSI}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={85}
+                      paddingAngle={2}
+                      dataKey="value"
+                    >
+                      {DATA_DISTRIBUSI.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      contentStyle={{ 
+                        background: 'var(--bg-elevated)', 
+                        border: '1px solid var(--border)', 
+                        borderRadius: 8, 
+                        fontSize: 12 
+                      }} 
+                    />
+                    <Legend 
+                      verticalAlign="bottom" 
+                      height={36}
+                      formatter={(value) => <span className="text-xs text-[var(--text-secondary)]">{value}</span>}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
           </div>
 
           {/* Tren Stunting - Line Chart */}
           <div className="card">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+            <div className="flex justify-between items-center mb-4">
               <div>
-                <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>Tren Prevalensi Stunting</div>
-                <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>6 bulan terakhir</div>
+                <div className="text-[14px] font-semibold text-[var(--text-primary)]">Tren Prevalensi Stunting</div>
+                <div className="text-[12px] text-[var(--text-muted)]">6 bulan terakhir</div>
               </div>
-              <span className="badge badge-success" style={{ fontSize: 11 }}>
+              <span className="badge badge-success text-[11px]">
                 <TrendingDown size={11} /> -5.2%
               </span>
             </div>
-            <ResponsiveContainer width="100%" height={220}>
-              <LineChart data={DATA_TREN}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                <XAxis dataKey="bulan" tick={{ fontSize: 11, fill: 'var(--text-muted)' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 11, fill: 'var(--text-muted)' }} axisLine={false} tickLine={false} width={30} />
-                <Tooltip 
-                  contentStyle={{ 
-                    background: 'var(--bg-elevated)', 
-                    border: '1px solid var(--border)', 
-                    borderRadius: 8, 
-                    fontSize: 12 
-                  }} 
-                />
-                <Legend 
-                  verticalAlign="bottom" 
-                  height={36}
-                  formatter={(value) => <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{value}</span>}
-                />
-                <Line type="monotone" dataKey="normal" stroke="#10B981" strokeWidth={2} dot={{ r: 3 }} />
-                <Line type="monotone" dataKey="stunted" stroke="#F59E0B" strokeWidth={2} dot={{ r: 3 }} />
-                <Line type="monotone" dataKey="severe" stroke="#E53935" strokeWidth={2} dot={{ r: 3 }} />
-              </LineChart>
-            </ResponsiveContainer>
+            {/* Wrapper overflow-x-auto agar tidak terpotong di layar sempit */}
+            <div className="overflow-x-auto w-full pb-2">
+              <div className="min-w-[400px]">
+                <ResponsiveContainer width="100%" height={220}>
+                  <LineChart data={DATA_TREN}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                    <XAxis dataKey="bulan" tick={{ fontSize: 11, fill: 'var(--text-muted)' }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fontSize: 11, fill: 'var(--text-muted)' }} axisLine={false} tickLine={false} width={30} />
+                    <Tooltip 
+                      contentStyle={{ 
+                        background: 'var(--bg-elevated)', 
+                        border: '1px solid var(--border)', 
+                        borderRadius: 8, 
+                        fontSize: 12 
+                      }} 
+                    />
+                    <Legend 
+                      verticalAlign="bottom" 
+                      height={36}
+                      formatter={(value) => <span className="text-xs text-[var(--text-secondary)]">{value}</span>}
+                    />
+                    <Line type="monotone" dataKey="normal" stroke="#10B981" strokeWidth={2} dot={{ r: 3 }} />
+                    <Line type="monotone" dataKey="stunted" stroke="#F59E0B" strokeWidth={2} dot={{ r: 3 }} />
+                    <Line type="monotone" dataKey="severe" stroke="#E53935" strokeWidth={2} dot={{ r: 3 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Perbandingan Wilayah - Bar Chart */}
-        <div className="card" style={{ marginBottom: 20 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+        <div className="card mb-5">
+          <div className="flex justify-between items-center mb-4">
             <div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>Distribusi Risiko per Kecamatan</div>
-              <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>Perbandingan antar wilayah</div>
+              <div className="text-[14px] font-semibold text-[var(--text-primary)]">Distribusi Risiko per Kecamatan</div>
+              <div className="text-[12px] text-[var(--text-muted)]">Perbandingan antar wilayah</div>
             </div>
           </div>
-          <ResponsiveContainer width="100%" height={260}>
-            <BarChart data={DATA_WILAYAH} barSize={36}>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-              <XAxis dataKey="name" tick={{ fontSize: 11, fill: 'var(--text-muted)' }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 11, fill: 'var(--text-muted)' }} axisLine={false} tickLine={false} width={30} />
-              <Tooltip 
-                contentStyle={{ 
-                  background: 'var(--bg-elevated)', 
-                  border: '1px solid var(--border)', 
-                  borderRadius: 8, 
-                  fontSize: 12 
-                }} 
-              />
-              <Legend 
-                verticalAlign="bottom" 
-                height={36}
-                formatter={(value) => <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{value}</span>}
-              />
-              <Bar dataKey="normal" stackId="a" fill="#10B981" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="stunted" stackId="a" fill="#F59E0B" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="severe" stackId="a" fill="#E53935" radius={[4, 4, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+          {/* Scroll wrapper mobile */}
+          <div className="overflow-x-auto w-full pb-2">
+            <div className="min-w-[500px]">
+              <ResponsiveContainer width="100%" height={260}>
+                <BarChart data={DATA_WILAYAH} barSize={36}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                  <XAxis dataKey="name" tick={{ fontSize: 11, fill: 'var(--text-muted)' }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 11, fill: 'var(--text-muted)' }} axisLine={false} tickLine={false} width={30} />
+                  <Tooltip 
+                    contentStyle={{ 
+                      background: 'var(--bg-elevated)', 
+                      border: '1px solid var(--border)', 
+                      borderRadius: 8, 
+                      fontSize: 12 
+                    }} 
+                  />
+                  <Legend 
+                    verticalAlign="bottom" 
+                    height={36}
+                    formatter={(value) => <span className="text-xs text-[var(--text-secondary)]">{value}</span>}
+                  />
+                  <Bar dataKey="normal" stackId="a" fill="#10B981" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="stunted" stackId="a" fill="#F59E0B" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="severe" stackId="a" fill="#E53935" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
         </div>
 
-        {/* Faktor Determinan + Perbandingan Nasional */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 16 }}>
+        {/* Faktor Determinan + Perbandingan Nasional - Migrasi ke Tailwind CSS */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-4">
           {/* Faktor Determinan */}
           <div className="card">
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-              <Brain size={16} color="var(--primary)" />
-              <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>Faktor Determinan Stunting</span>
-              <span style={{ fontSize: 11, color: 'var(--text-muted)', marginLeft: 'auto' }}>Berdasarkan analisis AI</span>
+            <div className="flex items-center gap-2 mb-4 flex-wrap">
+              <Brain size={16} className="text-[var(--primary)]" />
+              <span className="text-[14px] font-semibold text-[var(--text-primary)]">Faktor Determinan Stunting</span>
+              <span className="text-[11px] text-[var(--text-muted)] ml-auto">Berdasarkan analisis AI</span>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {DATA_FAKTOR.map((faktor, i) => (
                 <FaktorCard key={i} faktor={faktor} />
               ))}
@@ -432,35 +437,31 @@ export default function LaporanAI() {
 
           {/* Perbandingan Nasional */}
           <div className="card">
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-              <MapPin size={16} color="var(--primary)" />
-              <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>Perbandingan Nasional</span>
+            <div className="flex items-center gap-2 mb-4">
+              <MapPin size={16} className="text-[var(--primary)]" />
+              <span className="text-[14px] font-semibold text-[var(--text-primary)]">Perbandingan Nasional</span>
             </div>
-            <div style={{ marginBottom: 12 }}>
-              {DATA_PERBANDINGAN.map((item, i) => (
-                <div key={i} style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'space-between',
-                  padding: '10px 0',
-                  borderBottom: i < DATA_PERBANDINGAN.length - 1 ? '1px solid var(--border)' : 'none'
-                }}>
-                  <span style={{ fontSize: 12.5, color: 'var(--text-secondary)' }}>{item.indikator}</span>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>{item.nilai}</span>
-                    <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Nasional: {item.nasional}</span>
-                    {item.status === 'above' ? (
-                      <TrendingUp size={13} color="var(--danger)" />
-                    ) : (
-                      <TrendingDown size={13} color="var(--success)" />
-                    )}
+            <div className="mb-3 overflow-x-auto">
+              <div className="min-w-[260px]">
+                {DATA_PERBANDINGAN.map((item, i) => (
+                  <div key={i} className={`flex items-center justify-between py-2.5 ${i < DATA_PERBANDINGAN.length - 1 ? 'border-b border-[var(--border)]' : ''}`}>
+                    <span className="text-[12.5px] text-[var(--text-secondary)]">{item.indikator}</span>
+                    <div className="flex items-center gap-3">
+                      <span className="text-[13px] font-semibold text-[var(--text-primary)]">{item.nilai}</span>
+                      <span className="text-[12px] text-[var(--text-muted)]">Nasional: {item.nasional}</span>
+                      {item.status === 'above' ? (
+                        <TrendingUp size={13} className="text-[var(--danger)]" />
+                      ) : (
+                        <TrendingDown size={13} className="text-[var(--success)]" />
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-            <div className="alert alert-info" style={{ marginTop: 8, padding: '10px 12px' }}>
-              <AlertCircle size={14} style={{ flexShrink: 0 }} />
-              <span style={{ fontSize: 12 }}>
+            <div className="alert alert-info mt-2 p-2.5">
+              <AlertCircle size={14} className="shrink-0 mt-0.5" />
+              <span className="text-xs leading-relaxed">
                 Prevalensi stunting wilayah Anda (22%) masih di atas target nasional RPJMN 2029 (14.2%).
               </span>
             </div>
@@ -468,22 +469,14 @@ export default function LaporanAI() {
         </div>
 
         {/* Footer note */}
-        <div style={{ 
-          marginTop: 20, 
-          padding: '12px 16px', 
-          background: 'var(--bg-elevated)', 
-          borderRadius: 'var(--radius-md)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Brain size={14} color="var(--primary)" />
-            <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
+        <div className="mt-5 p-3 md:px-4 bg-[var(--bg-elevated)] rounded-[var(--radius-md)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <Brain size={14} className="text-[var(--primary)] shrink-0" />
+            <span className="text-xs text-[var(--text-secondary)] leading-relaxed">
               Analisis AI diperbarui setiap 24 jam. Data bersumber dari SSGI 2024 dan input Posyandu.
             </span>
           </div>
-          <button className="btn-ghost" style={{ fontSize: 12 }}>
+          <button className="btn-ghost text-xs whitespace-nowrap">
             Lihat Metodologi <ChevronDown size={12} />
           </button>
         </div>

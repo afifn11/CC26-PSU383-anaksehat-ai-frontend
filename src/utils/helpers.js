@@ -33,17 +33,8 @@ export function formatTanggalWaktu(dateStr) {
   })
 }
 
-export function hitungUsiaBulan(tanggalLahir) {
-  const lahir   = new Date(tanggalLahir)
-  const sekarang = new Date()
-  return (
-    (sekarang.getFullYear() - lahir.getFullYear()) * 12 +
-    (sekarang.getMonth() - lahir.getMonth())
-  )
-}
-
 export function getInitials(nama = '') {
-  return nama.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()
+  return nama.split(' ').map(w => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase()
 }
 
 // Warna badge berdasarkan status risiko
@@ -56,22 +47,6 @@ export function getRisikoClass(risiko) {
   }
 }
 
-// Warna teks berdasarkan HAZ z-score (WHO cut-off)
-export function getHazColor(haz) {
-  if (haz == null) return 'var(--text-muted)'
-  if (haz >= -2)   return 'var(--success)'
-  if (haz >= -3)   return 'var(--warning)'
-  return 'var(--danger)'
-}
-
-// Label status berdasarkan HAZ z-score
-export function getHazLabel(haz) {
-  if (haz == null) return '—'
-  if (haz >= -2)   return 'Normal'
-  if (haz >= -3)   return 'Stunted'
-  return 'Severely Stunted'
-}
-
 // Greeting dinamis berdasarkan jam
 export function getGreeting() {
   const hour = new Date().getHours()
@@ -81,10 +56,16 @@ export function getGreeting() {
   return 'Malam'
 }
 
-/** Alias exported for cross-module use; avoids duplicating logic */
+/**
+ * Hitung usia dalam bulan dari tanggal lahir ke hari ini.
+ * Menggunakan koreksi hari: jika hari ini belum melewati tanggal lahir
+ * di bulan yang sedang berjalan, kurangi 1 bulan (versi akurat).
+ */
 export function calcAgeMonths(birthDate) {
   if (!birthDate) return null
   const b = new Date(birthDate)
   const t = new Date()
-  return Math.max(0, (t.getFullYear() - b.getFullYear()) * 12 + (t.getMonth() - b.getMonth()))
+  let months = (t.getFullYear() - b.getFullYear()) * 12 + (t.getMonth() - b.getMonth())
+  if (t.getDate() < b.getDate()) months--
+  return Math.max(0, months)
 }

@@ -41,8 +41,13 @@ export function TopBar({ isLight, initials, greeting, profilHref }) {
         </span>
       </button>
 
-      {/* Notifications */}
-      <button className="btn-ghost px-2 py-[5px]" title="Notifikasi" aria-label="Notifikasi">
+      {/* Notifications - UX Fix: Dimatikan sementara karena fitur belum siap */}
+      <button 
+        className="btn-ghost px-2 py-[5px] opacity-50 cursor-not-allowed" 
+        title="Fitur segera hadir" 
+        aria-label="Notifikasi"
+        disabled
+      >
         <Bell size={16} />
       </button>
 

@@ -29,7 +29,8 @@ export default function OrangTuaDashboard() {
           setAnak(MOCK_BALITA.find(b => b.no_hp_ortu === user?.no_hp) || MOCK_BALITA[4])
           setChart(CHART_DATA_PERTUMBUHAN)
         } else {
-          const data = await orangtuaService.getDashboard()
+          // Lewatkan child_id secara eksplisit — service tidak boleh mengimpor store
+          const data = await orangtuaService.getDashboard(user?.child_id)
           if (!data) { toast.error('Data anak tidak ditemukan.'); return }
           setAnak(data.anak)
           if (data.chart_pertumbuhan?.length > 0) setChart(data.chart_pertumbuhan)
@@ -41,7 +42,9 @@ export default function OrangTuaDashboard() {
       }
     }
     fetchData()
-  }, [user?.no_hp])
+  // Gunakan child_id sebagai dependency — ini yang benar-benar dipakai service
+  // untuk fetch data, bukan no_hp yang tidak relevan.
+  }, [user?.child_id])
 
   if (loading) return (
     <MainLayout>
@@ -72,6 +75,31 @@ export default function OrangTuaDashboard() {
   )
 
   const hazColor = getHazColor(anak.haz_score)
+
+  // Mapping label edukasi ke route navigasi
+  const EDUKASI_ITEMS = [
+    {
+      icon: BookOpen,
+      label: 'Artikel',
+      title: 'Strategi MPASI & Nutrisi Optimal',
+      color: 'var(--primary)',
+      href: '/orangtua/rekomendasi',
+    },
+    {
+      icon: Video,
+      label: 'Video',
+      title: 'Pijat Bayi untuk Tumbuh Optimal',
+      color: 'var(--secondary-light)',
+      href: '/orangtua/rekomendasi',
+    },
+    {
+      icon: Users,
+      label: 'Komunitas',
+      title: 'Forum Diskusi Orang Tua Balita',
+      color: 'var(--accent)',
+      href: '/orangtua/rekomendasi',
+    },
+  ]
 
   return (
     <MainLayout>
@@ -189,20 +217,20 @@ export default function OrangTuaDashboard() {
 
             {/* Education cards — 1 col mobile, 3 cols md+ */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              {[
-                { icon: BookOpen, label: 'Artikel',   title: 'Strategi MPASI & Nutrisi Optimal', color: 'var(--primary)' },
-                { icon: Video,    label: 'Video',      title: 'Pijat Bayi untuk Tumbuh Optimal',  color: 'var(--secondary-light)' },
-                { icon: Users,    label: 'Komunitas', title: 'Forum Diskusi Orang Tua Balita',    color: 'var(--accent)' },
-              ].map(({ icon: Icon, label, title, color }) => (
+              {EDUKASI_ITEMS.map(({ icon: Icon, label, title, color, href }) => (
                 <div key={label} className="card flex flex-col gap-2">
                   <div className="w-[34px] h-[34px] rounded-[9px] flex items-center justify-center flex-shrink-0" style={{ background: `${color}22` }}>
                     <Icon size={17} color={color} />
                   </div>
                   <div className="text-[10px] text-[var(--text-muted)] font-semibold uppercase tracking-[0.5px]">{label}</div>
                   <div className="text-[12.5px] font-semibold text-[var(--text-primary)] leading-[1.4]">{title}</div>
-                  <button className="btn-ghost text-xs py-[3px] px-0 mt-auto" style={{ color }}>
-                    Buka →
-                  </button>
+                  <Link
+                    to={href}
+                    className="btn-ghost text-xs py-[3px] px-0 mt-auto no-underline inline-flex items-center gap-[3px]"
+                    style={{ color }}
+                  >
+                    Buka <ChevronRight size={12} />
+                  </Link>
                 </div>
               ))}
             </div>

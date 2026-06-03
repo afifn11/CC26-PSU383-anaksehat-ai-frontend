@@ -1,4 +1,5 @@
 import api from './api'
+import { calcAgeMonths } from '@/utils/helpers'
 
 // ─── Normalizers ──────────────────────────────────────────────────────────────
 
@@ -32,26 +33,12 @@ function normalizeChild(c) {
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-function calcAgeMonths(birthDate) {
-  if (!birthDate) return 0;
-  const b = new Date(birthDate), t = new Date();
-  
-  let months = (t.getFullYear() - b.getFullYear()) * 12 + (t.getMonth() - b.getMonth());
-  
-  // Kurangi 1 bulan jika tanggal hari ini belum melewati tanggal kelahirannya di bulan ini
-  if (t.getDate() < b.getDate()) {
-    months--; 
-  }
-  
-  return Math.max(0, months);
-}
-
 function categoryIcon(cat) {
   return (cat ?? '').toLowerCase()
 }
 
-function capitalize(s) { 
-  return s ? s.charAt(0).toUpperCase() + s.slice(1) : '' 
+function capitalize(s) {
+  return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''
 }
 
 // Mapping opsi form pendapatan → nilai backend
@@ -282,9 +269,13 @@ export const kaderService = {
 // ─── Orangtua Service ─────────────────────────────────────────────────────────
 
 export const orangtuaService = {
-  getDashboard: async () => {
-    const { useAuthStore } = await import('@/store/authStore')
-    const childId = useAuthStore.getState().user?.child_id
+  /**
+   * Ambil data dashboard orang tua berdasarkan child_id.
+   * childId harus dilewatkan secara eksplisit dari komponen pemanggil
+   * (biasanya dari useAuthStore().user?.child_id) — service layer tidak
+   * boleh mengimpor store secara dinamis.
+   */
+  getDashboard: async (childId) => {
     if (!childId) return null
 
     const [childRes, histRes] = await Promise.all([

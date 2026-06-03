@@ -32,24 +32,28 @@ export default function InputBalita() {
         </div>
 
         {/* Progress & Stepper */}
-        <div className="card mb-5">
+        <div className="card mb-5 overflow-hidden">
           <div className="mb-[14px]">
             <AnimatedProgressBar value={hook.progressPct} color="var(--primary)" showValue={false} height={5} />
           </div>
-          <div className="flex items-start">
+          
+          {/* UI Fix: Ditambahkan overflow-x-auto & no-scrollbar untuk perlindungan layar ultra-kecil */}
+          <div className="flex items-start justify-between overflow-x-auto pb-2 md:pb-0 md:overflow-visible no-scrollbar">
             {INPUT_STEPS.map((st, i) => {
               const Icon = STEP_ICONS[i]
               const done = i < hook.step
               const active = i === hook.step
+              
               return (
                 <div
                   key={i}
-                  className="flex items-start"
+                  className="flex items-start min-w-[75px] sm:min-w-0"
                   style={{ flex: i < INPUT_STEPS.length - 1 ? 1 : 'none' }}
                 >
-                  <div className="flex flex-col items-center gap-[6px]">
+                  <div className="flex flex-col items-center gap-[6px] w-full">
+                    {/* UI Fix: Ukuran lingkaran responsif w-8 h-8 di mobile */}
                     <div
-                      className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300"
+                      className="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300"
                       style={{
                         background: done ? 'var(--primary)' : active ? 'var(--primary-muted)' : 'var(--bg-elevated)',
                         border: `2px solid ${done || active ? 'var(--primary)' : 'var(--border)'}`,
@@ -57,26 +61,32 @@ export default function InputBalita() {
                       }}
                     >
                       {done ? (
-                        <CheckCircle size={16} color="#fff" />
+                        <CheckCircle size={14} color="#fff" />
                       ) : (
-                        <Icon size={15} color={active ? 'var(--primary)' : 'var(--text-muted)'} />
+                        <Icon size={14} color={active ? 'var(--primary)' : 'var(--text-muted)'} />
                       )}
                     </div>
-                    <div className="text-center">
+                    
+                    <div className="text-center px-1">
+                      {/* UI Fix: Mengganti whitespace-nowrap dengan line-clamp agar muat 4 kolom di mobile */}
                       <div
-                        className="text-xs font-semibold whitespace-nowrap"
+                        className="text-[10px] sm:text-xs font-semibold line-clamp-1 sm:line-clamp-none sm:whitespace-nowrap"
                         style={{
                           color: active ? 'var(--text-primary)' : done ? 'var(--primary-light)' : 'var(--text-muted)',
                         }}
                       >
                         {st.label}
                       </div>
-                      <div className="text-[11px] text-[var(--text-muted)] mt-[1px]">{st.desc}</div>
+                      {/* UI Fix: Menyembunyikan deskripsi sekunder yang terlalu panjang di mobile */}
+                      <div className="text-[11px] text-[var(--text-muted)] mt-[1px] hidden sm:block">
+                        {st.desc}
+                      </div>
                     </div>
                   </div>
+                  
                   {i < INPUT_STEPS.length - 1 && (
                     <div
-                      className="flex-1 h-[2px] mx-2 mt-[17px] rounded-[1px] transition-colors duration-400"
+                      className="flex-1 h-[2px] mx-1 sm:mx-2 mt-[15px] sm:mt-[17px] rounded-[1px] transition-colors duration-400"
                       style={{
                         background: i < hook.step ? 'var(--primary)' : 'var(--border)',
                       }}
@@ -88,7 +98,8 @@ export default function InputBalita() {
           </div>
         </div>
 
-        <div className="grid grid-cols-[1fr_280px] gap-4">
+        {/* Layout: 1 kolom di mobile, 2 kolom (form + sidebar) di layar besar */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-4">
           {/* Form card */}
           <div className="card animate-[fadeIn_0.2s_ease]" key={hook.step}>
             {hook.step === 0 && (
@@ -150,7 +161,7 @@ export default function InputBalita() {
             </div>
           </div>
 
-          {/* Sidebar tips */}
+          {/* Sidebar tips — muncul di bawah form pada mobile, di samping kanan pada desktop */}
           <div className="flex flex-col gap-3">
             <div className="card bg-[linear-gradient(135deg,rgba(0,136,106,0.1),rgba(0,136,106,0.04))] border-[rgba(0,136,106,0.2)]">
               <div className="flex gap-2 mb-[10px] items-center">
@@ -164,7 +175,7 @@ export default function InputBalita() {
             <div className="card">
               <div className="text-xs font-semibold mb-[10px] text-[var(--text-secondary)]">Model AI</div>
               {[
-                ['Algoritma',  'Deep Neural Decision Forest'],
+                ['Algoritma',   'Deep Neural Decision Forest'],
                 ['Versi Model','v5.0.0 · Akurasi 95.04%'],
                 ['Standar',    'WHO Child Growth Standards'],
                 ['Output',     '3 kelas: Normal, Stunted, Severely Stunted'],

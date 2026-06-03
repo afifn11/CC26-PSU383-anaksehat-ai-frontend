@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/set-state-in-effect */
-/* eslint-disable react-hooks/immutability */
 // src/pages/auth/Register.jsx
 import { useState, useMemo, useEffect, useCallback } from 'react'
 import { useNavigate, Link, useSearchParams } from 'react-router-dom'
@@ -213,17 +211,6 @@ export default function Register() {
   const set  = (f) => (e) => { setForm((p) => ({ ...p, [f]: e.target.value })); setServerError('') }
   const blur = (f) => setTouched((t) => ({ ...t, [f]: true }))
 
-  useEffect(() => {
-    if (codeFromUrl.length === 6 && role === 'orangtua') handleCheckCode(codeFromUrl)
-  }, []) // eslint-disable-line
-
-  useEffect(() => {
-    if (role !== 'orangtua') return
-    if (form.kode.length !== 6) { setChildInfo(null); setCodeConfirmed(false); return }
-    const t = setTimeout(() => handleCheckCode(form.kode), 300)
-    return () => clearTimeout(t)
-  }, [form.kode, role]) // eslint-disable-line
-
   const handleCheckCode = useCallback(async (code) => {
     setCheckingCode(true); setChildInfo(null); setCodeConfirmed(false); setServerError('')
     try {
@@ -238,6 +225,19 @@ export default function Register() {
       setCheckingCode(false)
     }
   }, [])
+
+  // Auto-check kode yang datang dari URL query param
+  useEffect(() => {
+    if (codeFromUrl.length === 6 && role === 'orangtua') handleCheckCode(codeFromUrl)
+  }, [codeFromUrl, role, handleCheckCode])
+
+  // Debounce check saat user mengetik kode manual
+  useEffect(() => {
+    if (role !== 'orangtua') return
+    if (form.kode.length !== 6) { setChildInfo(null); setCodeConfirmed(false); return }
+    const t = setTimeout(() => handleCheckCode(form.kode), 300)
+    return () => clearTimeout(t)
+  }, [form.kode, role, handleCheckCode])
 
   const errors = useMemo(() => ({
     kode:     role === 'orangtua' && form.kode.length !== 6 ? 'Kode harus tepat 6 digit.' : '',

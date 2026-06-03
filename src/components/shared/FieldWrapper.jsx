@@ -1,3 +1,4 @@
+// src/components/shared/FieldWrapper.jsx
 import { AlertTriangle } from 'lucide-react'
 
 export function FieldWrapper({ label, icon: Icon, error, touched, required = false, half = false, children }) {

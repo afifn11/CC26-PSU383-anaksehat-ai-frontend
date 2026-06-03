@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 // src/pages/orangtua/DataAnak.jsx
 import { useEffect, useState } from 'react'
 import MainLayout from '@/components/layout/MainLayout'
@@ -8,7 +7,7 @@ import { getHazColor, getWhoStatusColor, getWhoStatusShortLabel } from '@/consta
 import toast from 'react-hot-toast'
 import { Breadcrumb, CardSkeleton, EmptyState, StatusBadge } from '@/components/ui/SharedComponents'
 import { AnimatedProgressBar, AnimatedStatCard } from '@/components/ui/AnimatedCounter'
-import { TrendingUp } from 'lucide-react'
+import { useAuthStore } from '@/store/authStore'
 
 const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
 
@@ -20,7 +19,7 @@ function InfoTable({ icon: Icon, title, rows }) {
       </div>
       <table className="w-full">
         <tbody>
-          {rows.map(([label, value, extra], i) => (
+          {rows.map(([label, value, , extra], i) => (
             <tr key={label}>
               <td
                 className="p-[12px_18px] text-[13px] text-[var(--text-muted)] w-[42%] align-middle"
@@ -43,6 +42,7 @@ function InfoTable({ icon: Icon, title, rows }) {
 }
 
 export default function DataAnak() {
+  const { user }              = useAuthStore()
   const [anak, setAnak]       = useState(null)
   const [loading, setLoading] = useState(true)
 
@@ -54,24 +54,25 @@ export default function DataAnak() {
           await new Promise(r => setTimeout(r, 650))
           setAnak(MOCK_BALITA[4])
         } else {
-          const data = await orangtuaService.getDashboard()
+          const data = await orangtuaService.getDashboard(user?.child_id)
           setAnak(data?.anak ?? null)
         }
-      } catch (err) {
+      } catch {
         toast.error('Gagal memuat data anak.')
       } finally {
         setLoading(false)
       }
     }
     fetchData()
-  }, [])
+  }, [user?.child_id])
 
   if (loading) return (
     <MainLayout>
       <div className="fade-in">
         <div className="skeleton-shimmer h-[14px] w-[180px] rounded-[5px] mb-[18px]" />
         <CardSkeleton lines={4} />
-        <div className="grid grid-cols-3 gap-3 my-4">
+        {/* Skeleton grid — responsif sama seperti konten nyatanya */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 my-4">
           <CardSkeleton lines={3} />
           <CardSkeleton lines={3} />
           <CardSkeleton lines={3} />
@@ -144,8 +145,8 @@ export default function DataAnak() {
           </div>
         </div>
 
-        {/* Quick stat cards */}
-        <div className="grid grid-cols-3 gap-3 mb-4">
+        {/* Quick stat cards — 1 col mobile, 3 cols sm+ */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
           <AnimatedStatCard label="Berat Badan"     value={anak.berat_badan   != null ? Math.round(anak.berat_badan * 10) / 10 : null} sub="kg" color="var(--primary)"        icon={Scale}      delay={0}   />
           <AnimatedStatCard label="Tinggi Badan"    value={anak.tinggi_badan  != null ? Math.round(anak.tinggi_badan * 10) / 10 : null} sub="cm" color="var(--secondary-light)" icon={Ruler}      delay={80}  />
           <AnimatedStatCard label="Usia"            value={anak.usia_bulan}    sub="bulan"                                                       color="var(--accent)"         icon={Calendar}   delay={160} />
@@ -173,7 +174,8 @@ export default function DataAnak() {
                   <span>−4 SD (Severe)</span><span>−2 SD</span><span>0 (Normal)</span><span>+2 SD</span>
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-2">
+              {/* Status grid — 1 col mobile, 3 cols sm+ */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 {[
                   ['Stunting', anak.stunting_status],
                   ['Gizi Kurang', anak.underweight_status],
@@ -210,16 +212,16 @@ export default function DataAnak() {
 
           <InfoTable icon={Brain} title="Hasil Analisis AI" rows={[
             ['Stunting', '', null,
-              <span className="font-bold" style={{ color: getWhoStatusColor(anak.stunting_status) }}>{getWhoStatusShortLabel(anak.stunting_status ?? 'Normal')}</span>
+              <span key="stunting" className="font-bold" style={{ color: getWhoStatusColor(anak.stunting_status) }}>{getWhoStatusShortLabel(anak.stunting_status ?? 'Normal')}</span>
             ],
             ['Gizi Kurang', '', null,
-              <span className="font-bold" style={{ color: getWhoStatusColor(anak.underweight_status) }}>{getWhoStatusShortLabel(anak.underweight_status ?? 'Normal')}</span>
+              <span key="gizi" className="font-bold" style={{ color: getWhoStatusColor(anak.underweight_status) }}>{getWhoStatusShortLabel(anak.underweight_status ?? 'Normal')}</span>
             ],
             ['Wasting', '', null,
-              <span className="font-bold" style={{ color: getWhoStatusColor(anak.wasting_status) }}>{getWhoStatusShortLabel(anak.wasting_status ?? 'Normal')}</span>
+              <span key="wasting" className="font-bold" style={{ color: getWhoStatusColor(anak.wasting_status) }}>{getWhoStatusShortLabel(anak.wasting_status ?? 'Normal')}</span>
             ],
             ['HAZ Z-Score', anak.haz_score != null ? anak.haz_score.toFixed(2) : '–', null,
-              anak.haz_score != null ? <span className="font-bold" style={{ color: hazColor }}>{anak.haz_score.toFixed(2)} SD</span> : <span className="text-[var(--text-muted)]">–</span>
+              anak.haz_score != null ? <span key="haz" className="font-bold" style={{ color: hazColor }}>{anak.haz_score.toFixed(2)} SD</span> : <span key="haz-empty" className="text-[var(--text-muted)]">–</span>
             ],
           ]} />
         </div>

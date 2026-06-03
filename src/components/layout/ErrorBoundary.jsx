@@ -12,7 +12,15 @@ export class ErrorBoundary extends Component {
   }
 
   componentDidCatch(error, info) {
-    console.error('ErrorBoundary caught:', error, info)
+    // Pengamanan Security: Log error hanya berjalan di environment development (lokal)
+    // untuk mencegah kebocoran stack trace ke public di production
+    if (import.meta.env.DEV) {
+      console.error('ErrorBoundary caught:', error, info)
+    } else {
+      // Praktik Terbaik Production: 
+      // Kirim report error secara diam-diam ke service error monitoring seperti Sentry/Datadog
+      // contoh: Sentry.captureException(error, { extra: info })
+    }
   }
 
   render() {
@@ -32,6 +40,8 @@ export class ErrorBoundary extends Component {
           Komponen mengalami error tak terduga. Ini bukan kesalahan Anda — coba muat ulang halaman.
         </p>
 
+        {/* Di production mode yang ketat, pesan error mentah ini bisa disembunyikan juga 
+            Namun untuk sementara ini dibiarkan agar user tau alasan spesifik gagalnya render */}
         {this.state.error && (
           <div className="bg-[var(--bg-elevated)] border border-[var(--border)] rounded-[var(--radius-md)] px-4 py-[10px] text-xs text-[var(--text-muted)] font-mono max-w-[420px] mb-6 text-left break-all">
             {this.state.error.message}

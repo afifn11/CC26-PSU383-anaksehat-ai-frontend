@@ -1,29 +1,12 @@
-/* eslint-disable no-unused-vars */
 // src/pages/kader/EditBalita.jsx
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import MainLayout from '@/components/layout/MainLayout'
 import api from '@/services/api'
-import { Save, AlertTriangle, CheckCircle, User, MapPin, ChevronLeft } from 'lucide-react'
+import { Save, CheckCircle, User, MapPin, ChevronLeft } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { Breadcrumb } from '@/components/ui/SharedComponents'
-
-function FieldWrapper({ label, error, touched, required, half, children }) {
-  return (
-    <div className={half ? 'flex-[1_1_calc(50%-6px)]' : 'flex-[1_1_100%]'}>
-      <label className="label">
-        {label}
-        {required && <span className="text-[var(--danger)] ml-[3px]">*</span>}
-      </label>
-      {children}
-      {touched && error && (
-        <div className="flex items-center gap-[5px] mt-[5px] text-xs text-[var(--danger)] animate-[fadeIn_0.15s_ease]">
-          <AlertTriangle size={11} /> {error}
-        </div>
-      )}
-    </div>
-  )
-}
+import { FieldWrapper } from '@/components/shared/FieldWrapper'
 
 export default function EditBalita() {
   const { child_id } = useParams()
@@ -109,7 +92,7 @@ export default function EditBalita() {
 
   if (loading) return (
     <MainLayout>
-      <div className="fade-in">
+      <div className="fade-in max-w-[800px] mx-auto">
         {/* Skeleton */}
         {[180, 60, 100, 60].map((w, i) => (
           <div
@@ -132,7 +115,7 @@ export default function EditBalita() {
 
   return (
     <MainLayout>
-      <div className="fade-in">
+      <div className="fade-in max-w-[800px] mx-auto">
         <Breadcrumb items={[
           { label: 'Dashboard',      href: '/kader/dashboard' },
           { label: 'Kelola Balita',  href: '/kader/kelola-balita' },

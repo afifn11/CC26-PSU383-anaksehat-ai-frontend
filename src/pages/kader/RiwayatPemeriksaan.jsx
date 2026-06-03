@@ -109,7 +109,7 @@ export default function RiwayatPemeriksaan() {
 
   return (
     <MainLayout>
-      <div className="fade-in">
+      <div className="fade-in max-w-[1200px]">
         <Breadcrumb items={[
           { label: 'Dashboard', href: '/kader/dashboard' },
           { label: 'Riwayat Pemeriksaan' },
@@ -121,7 +121,7 @@ export default function RiwayatPemeriksaan() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-3 mb-5">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
           <AnimatedStatCard label="Total Balita"    value={loading ? null : total}  sub="Terdaftar"       color="var(--primary)"  icon={Users}        delay={0}   />
           <AnimatedStatCard label="Status Normal"   value={loading ? null : normal} sub="Pertumbuhan baik" color="var(--success)"  icon={CheckCircle}  delay={80}  />
           <AnimatedStatCard label="Perlu Perhatian" value={loading ? null : atRisk} sub="Perlu intervensi" color="var(--warning)"  icon={AlertCircle}  delay={160} />
@@ -181,7 +181,7 @@ export default function RiwayatPemeriksaan() {
                       }}
                     >
                       <div
-                        className="avatar w-8 h-8 text-xs"
+                        className="avatar w-8 h-8 text-xs shrink-0"
                         style={{
                           border: isActive ? '2px solid var(--primary)' : '2px solid transparent',
                         }}
@@ -202,7 +202,7 @@ export default function RiwayatPemeriksaan() {
                           </span>
                         </div>
                       </div>
-                      <div className="flex-shrink-0">
+                      <div className="flex-shrink-0 hidden sm:block">
                         <StatusBadge status={status} />
                       </div>
                     </button>
@@ -224,7 +224,7 @@ export default function RiwayatPemeriksaan() {
                 <div className="card mb-[14px]">
                   <div className="flex justify-between items-start flex-wrap gap-3">
                     <div className="flex gap-3 items-start">
-                      <div className="avatar w-[44px] h-[44px] text-[17px]">
+                      <div className="avatar w-[44px] h-[44px] text-[17px] shrink-0">
                         {(selected.nama ?? '?').split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase()}
                       </div>
                       <div>
@@ -235,9 +235,9 @@ export default function RiwayatPemeriksaan() {
                         <div className="mt-2 flex gap-2 flex-wrap">
                           <StatusBadge status={selected.status_risiko ?? selected.status ?? '—'} />
                           {selected.haz_score != null && (
-                            <span className="text-xs text-[var(--text-muted)]">
+                            <span className="text-xs text-[var(--text-muted)] flex items-center">
                               HAZ:{' '}
-                              <strong style={{
+                              <strong className="ml-1" style={{
                                 color: selected.haz_score >= -2 ? 'var(--success)' : selected.haz_score >= -3 ? 'var(--warning)' : 'var(--danger)',
                               }}>
                                 {selected.haz_score.toFixed(2)}
@@ -248,7 +248,14 @@ export default function RiwayatPemeriksaan() {
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <button className="btn-secondary text-xs"><Download size={14} /> Unduh</button>
+                      {/* UX Fix: Tombol Unduh dinonaktifkan */}
+                      <button 
+                        className="btn-secondary text-xs opacity-50 cursor-not-allowed" 
+                        title="Fitur segera hadir" 
+                        disabled
+                      >
+                        <Download size={14} /> Unduh
+                      </button>
                       {selected.prediksiId && (
                         <Link to={`/kader/hasil-prediksi/${selected.id}/${selected.prediksiId}`} className="btn-primary text-xs">
                           <Eye size={14} /> Lihat Hasil AI
@@ -337,7 +344,7 @@ export default function RiwayatPemeriksaan() {
                                     )}
                                   </div>
                                 </div>
-                                <div className="flex gap-2 items-center">
+                                <div className="flex gap-2 items-center mt-2 sm:mt-0">
                                   {(r.status_risiko ?? r.status) && <StatusBadge status={r.status_risiko ?? r.status} />}
                                   {r.prediction_id && (
                                     <Link
