@@ -8,7 +8,6 @@ export function LandingCTA() {
   const { theme } = useThemeStore()
   const isLight = theme === 'light'
 
-  // Dua overlay CSS vars tidak tersedia sebagai Tailwind class karena bergantung pada state runtime
   const overlayGradient = isLight
     ? 'linear-gradient(135deg, rgba(0,61,46,0.93) 0%, rgba(0,107,84,0.85) 50%, rgba(0,136,106,0.72) 100%)'
     : 'linear-gradient(135deg, rgba(0,26,20,0.96) 0%, rgba(0,61,46,0.92) 50%, rgba(0,96,74,0.80) 100%)'
@@ -18,19 +17,15 @@ export function LandingCTA() {
       <Reveal>
         <div className="relative overflow-hidden rounded-2xl">
 
-          {/* Layer 1 — foto */}
           <div
             className="absolute inset-0 bg-cover bg-[center_30%]"
             style={{ backgroundImage: `url(${HERO_PHOTOS[2]})` }}
           />
 
-          {/* Layer 2 — overlay teal (state-driven, inline diizinkan) */}
           <div className="absolute inset-0" style={{ background: overlayGradient }} />
 
-          {/* Layer 3 — fade kanan */}
           <div className="absolute inset-0 bg-gradient-to-l from-black/20 to-transparent" />
 
-          {/* Layer 4 — grid pattern dekoratif */}
           <svg className="absolute inset-0 h-full w-full opacity-[0.04]" aria-hidden="true">
             <defs>
               <pattern id="ctaGrid" width="36" height="36" patternUnits="userSpaceOnUse">
@@ -40,10 +35,8 @@ export function LandingCTA() {
             <rect width="100%" height="100%" fill="url(#ctaGrid)" />
           </svg>
 
-          {/* Konten */}
           <div className="relative z-10 flex flex-col gap-7 p-8 md:flex-row md:items-center md:justify-between md:gap-12 md:p-[clamp(36px,5vw,56px)]">
 
-            {/* Teks */}
             <div className="max-w-[500px]">
               <div className="mb-2 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-white/55">
                 Mulai Sekarang
@@ -57,11 +50,10 @@ export function LandingCTA() {
 
               <div className="mt-4 flex items-center gap-[6px] text-[12px] text-white/50">
                 <ShieldCheck size={13} className="text-emerald-400" />
-                Standar WHO 2006 · Data SSGI 2024 · 95% akurasi model
+                Standar WHO 2006 · Deteksi Berbasis Z-Score
               </div>
             </div>
 
-            {/* CTA buttons */}
             <div className="flex shrink-0 flex-col gap-3 md:min-w-[220px]">
               <Link
                 to="/login"

@@ -8,7 +8,6 @@ function EpistemicPillar({ eyebrow, stat, label, source, color, desc, delay }) {
   return (
     <Reveal delay={delay}>
       <div className="group relative overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-7 md:p-8 transition-all duration-300 hover:border-[var(--border-medium)]">
-        {/* Accent bar kiri */}
         <div
           className="absolute left-0 top-0 h-full w-[3px] opacity-60 transition-opacity duration-300 group-hover:opacity-100"
           style={{ background: color }}
@@ -81,10 +80,8 @@ export function LandingAbout() {
   return (
     <section id="tentang" className="border-b border-[var(--border)] bg-[var(--bg-base)]">
 
-      {/* ── Bagian 1: Konteks masalah — editorial Z-pattern ── */}
       <div className="mx-auto max-w-[1200px] px-5 py-16 md:px-[clamp(20px,5vw,60px)] md:py-[88px]">
 
-        {/* Header editorial */}
         <Reveal>
           <div className="mb-12 flex flex-col gap-4 md:mb-16 md:flex-row md:items-end md:justify-between md:gap-12">
             <div className="max-w-[480px]">
@@ -104,7 +101,6 @@ export function LandingAbout() {
           </div>
         </Reveal>
 
-        {/* Tiga pilar statistik */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 md:gap-5">
           {ABOUT_PILLARS.map((pillar, i) => (
             <EpistemicPillar key={pillar.eyebrow} {...pillar} delay={i * 80} />
@@ -112,39 +108,28 @@ export function LandingAbout() {
         </div>
       </div>
 
-      {/* ── Bagian 2: Landasan data — strip kontras ── */}
       <div className="border-y border-[var(--border)] bg-[var(--bg-surface)]">
         <div className="mx-auto max-w-[1200px] px-5 py-12 md:px-[clamp(20px,5vw,60px)] md:py-[64px]">
           <div className="grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-20 md:items-center">
 
-            {/* Kiri: narasi positioning */}
             <Reveal>
               <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--text-muted)] mb-3">
-                Fondasi Data
+                Fondasi Sistem
               </div>
               <h3 className="font-jakarta text-[clamp(20px,2.5vw,30px)] font-extrabold leading-[1.2] text-[var(--text-primary)] mb-4">
-                Dibangun dari data resmi nasional — bukan generik.
+                Tervalidasi secara klinis melalui standar global WHO.
               </h3>
-              <p className="text-[13.5px] leading-[1.85] text-[var(--text-secondary)] mb-6">
-                Setiap prediksi AnakSehat AI berakar pada data epidemiologi nyata dari Kemenkes
-                dan standar klinis WHO — sehingga hasilnya relevan untuk kondisi Indonesia,
-                bukan sekadar model generik yang diimpor.
+              <p className="text-[13.5px] leading-[1.85] text-[var(--text-secondary)]">
+                Setiap pengukuran dan deteksi yang dihasilkan oleh AnakSehat AI berakar langsung pada
+                standar pertumbuhan dan referensi klinis Z-Score WHO 2006 — memastikan hasil yang 
+                aman, akurat, dan sesuai dengan regulasi medis resmi yang diakui di seluruh dunia.
               </p>
-              {/* Akurasi callout */}
-              <div className="inline-flex items-baseline gap-3 rounded-xl border border-[var(--border)] bg-[var(--bg-elevated)] px-5 py-4">
-                <span className="font-jakarta text-[36px] font-black leading-none text-[var(--primary)]">95%</span>
-                <div>
-                  <div className="text-[13px] font-semibold text-[var(--text-primary)]">Akurasi model AI</div>
-                  <div className="text-[11.5px] text-[var(--text-muted)]">Validasi cross-dataset SSGI</div>
-                </div>
-              </div>
             </Reveal>
 
-            {/* Kanan: daftar sumber data */}
             <Reveal delay={100}>
               <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] px-6 py-5">
                 <div className="mb-4 text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--text-muted)]">
-                  Referensi Data
+                  Referensi Data & Parameter
                 </div>
                 {ABOUT_DATA_SOURCES.map((src) => (
                   <DataSourceRow key={src.label} {...src} />
@@ -155,7 +140,6 @@ export function LandingAbout() {
         </div>
       </div>
 
-      {/* ── Bagian 3: Disclaimer medis ── */}
       <div className="mx-auto max-w-[1200px] px-5 py-10 md:px-[clamp(20px,5vw,60px)] md:py-12">
         <MedicalDisclaimer />
       </div>

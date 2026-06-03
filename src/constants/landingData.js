@@ -20,15 +20,13 @@ export const NAVBAR_LINKS = [
 
 // ─── Stats ────────────────────────────────────────────────────────────────────
 export const STATS = [
-  { value: 19,  suffix: '.8%', label: 'Prevalensi stunting nasional',  src: 'SSGI Kemenkes 2024',   color: 'var(--primary)' },
-  { value: 14,  suffix: '.2%', label: 'Target penurunan RPJMN 2029',   src: 'Target Nasional',       color: '#7866BC' },
-  { value: 95,  suffix: '%',   label: 'Akurasi model AI',               src: 'Validasi dataset',      color: '#D85A30' },
-  { value: 345, suffix: 'K',   label: 'Sampel dataset nasional',        src: 'SSGI 514 Kab/Kota',    color: '#0E7DAA' },
+  { value: 19,  suffix: '.8%',   label: 'Prevalensi stunting nasional', src: 'Fakta SSGI 2024',       color: 'var(--primary)' },
+  { value: 14,  suffix: '.2%',   label: 'Target penurunan RPJMN 2029',  src: 'Target Nasional',       color: '#7866BC' },
+  { value: 3,   suffix: ' Kelas',label: 'Deteksi parameter gizi',       src: 'Standar WHO 2006',      color: '#D85A30' },
+  { value: 100, suffix: '%',     label: 'Kepatuhan referensi klinis',   src: 'Algoritma Z-Score',     color: '#0E7DAA' },
 ]
 
-// ─── About — HAPUS PROJECT_META, TECH_STACK, TEAM_MEMBERS ────────────────────
-// Ganti dengan konten yang menonjolkan nilai produk & kredibilitas medis
-
+// ─── About ────────────────────────────────────────────────────────────────────
 export const ABOUT_PILLARS = [
   {
     eyebrow: 'Epidemiologi',
@@ -57,9 +55,8 @@ export const ABOUT_PILLARS = [
 ]
 
 export const ABOUT_DATA_SOURCES = [
-  { label: 'SSGI 2024 · Kemenkes RI',          note: '345K sampel, 514 Kab/Kota' },
-  { label: 'Riskesdas 2018',                   note: 'Faktor sosioekonomi & sanitasi' },
   { label: 'WHO Child Growth Standards 2006',  note: 'Z-Score BB/U, TB/U, BB/TB' },
+  { label: 'Riskesdas 2018',                   note: 'Faktor sosioekonomi & sanitasi' },
   { label: 'RPJMN 2025–2029',                  note: 'Kerangka target nasional' },
 ]
 
@@ -102,9 +99,9 @@ export const FEATURES = [
     icon: FileCheck,
     color: '#7866BC',
     bg: 'rgba(120,102,188,0.12)',
-    title: 'Berbasis Data Resmi',
-    desc: 'Dibangun dari data SSGI 2024 Kemenkes (345K sampel) dan referensi Z-Score WHO 2006 — bukan dataset generik, tapi representasi populasi Indonesia.',
-    tags: ['SSGI 2024', 'WHO Standards'],
+    title: 'Referensi Z-Score WHO 2006',
+    desc: 'Dibangun berdasarkan referensi Z-Score WHO 2006 — memastikan seluruh kalkulasi dan deteksi selaras dengan standar pertumbuhan anak global yang diakui.',
+    tags: ['Standar Global', 'Akurasi Medis'],
   },
   {
     icon: HeartPulse,
@@ -142,9 +139,8 @@ export const FEATURES = [
 
 // ─── Footer ───────────────────────────────────────────────────────────────────
 export const FOOTER_REFS = [
-  'SSGI 2024 · Kemenkes RI',
-  'Riskesdas 2018',
   'WHO Child Growth Standards 2006',
+  'Riskesdas 2018',
   'RPJMN 2025–2029',
 ]
 

@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ShieldCheck, Database, Lock, ArrowRight } from 'lucide-react'
+import { ShieldCheck, Lock, ArrowRight } from 'lucide-react'
 import { HERO_PHOTOS } from '@/constants/landingData'
 
 const TRUST_BADGES = [
   { icon: ShieldCheck, label: 'Standar WHO 2006' },
-  { icon: Database,    label: 'SSGI 2024 · 345K sampel' },
   { icon: Lock,        label: 'Data terenkripsi' },
 ]
 
